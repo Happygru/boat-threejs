@@ -58,7 +58,7 @@ export default function Boat() {
     camera.position.set(-2, 0.4, -0.9);
 
     controls.update();
-    renderer.setPixelRatio(1);
+    renderer.setPixelRatio(2);
     function render(time) {
       time *= 0.001;
 

@@ -48,7 +48,7 @@ canvas {
   border-radius: 25px;
   background-color: #ff9900;
   padding: 5px 0;
-  padding-block: 10px;
+  padding-block: 5px;
 }
 
 .draggable-item.black {

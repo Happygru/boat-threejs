@@ -77,10 +77,5 @@ export default function Boat() {
     requestAnimationFrame(render);
   }, []);
 
-  return (
-    <canvas
-      id="canvas"
-      style={{ width: "100%", height: "calc(100vh + 100vw)/2" }}
-    />
-  );
+  return <canvas id="canvas" style={{ width: "100%", height: "100vh" }} />;
 }

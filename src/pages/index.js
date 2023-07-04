@@ -5,27 +5,53 @@ import MSelect from './MSelect';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import CloseIcon from '@mui/icons-material/Close';
 
-import initialData from './initial-data';
+import backgroundImg from "../assets/background.png";
+
+import initialData from "./initial-data";
 
 export default function View() {
-
   const [state, setState] = useState(initialData);
 
+  const deleteConfiguration = useCallback(
+    (clickID) => {
+      const updatedColumns = {
+        ...state.columns,
+        "column-1": {
+          ...state.columns["column-1"],
+          taskIds: state.columns["column-1"].taskIds.filter(
+            (taskId) => taskId !== clickID
+          ),
+        },
+        "column-2": {
+          ...state.columns["column-2"],
+          taskIds: [...state.columns["column-2"].taskIds, clickID],
+        },
+      };
+
+      const updatedData = {
+        ...state,
+        columns: updatedColumns,
+      };
+      setState({ ...updatedData });
+    },
+    [state]
+  );
+
   const handleDragStart = useCallback(
-    start => {
+    (start) => {
       document.body.style.color = "orange";
       document.body.style.transition = "background-color 0.2s ease";
 
       setState({
         ...state,
-        homeIndex: state.columnOrder.indexOf(start.source.droppableId)
+        homeIndex: state.columnOrder.indexOf(start.source.droppableId),
       });
     },
     [state]
   );
 
   const handleDragUpdate = useCallback(
-    update => {
+    (update) => {
       const opacity = update.destination
         ? update.destination.index / Object.keys(state.tasks).length
         : 0;
@@ -36,13 +62,10 @@ export default function View() {
   );
 
   const handleDragEnd = useCallback(
-    result => {
-      document.body.style.color = "inherit";
-      document.body.style.backgroundColor = "inherit";
-
+    (result) => {
       setState({
         ...state,
-        homeIndex: null
+        homeIndex: null,
       });
 
       if (!result.destination) {
@@ -55,7 +78,6 @@ export default function View() {
       ) {
         return;
       }
-      console.log(result)
       const start = state.columns[result.source.droppableId];
       const finish = state.columns[result.destination.droppableId];
 
@@ -66,15 +88,15 @@ export default function View() {
 
         const newColumn = {
           ...start,
-          taskIds: newTaskIds
+          taskIds: newTaskIds,
         };
 
         setState({
           ...state,
           columns: {
             ...state.columns,
-            [newColumn.id]: newColumn
-          }
+            [newColumn.id]: newColumn,
+          },
         });
         return;
       }
@@ -83,14 +105,14 @@ export default function View() {
       startTaskIds.splice(result.source.index, 1);
       const newStart = {
         ...start,
-        taskIds: startTaskIds
+        taskIds: startTaskIds,
       };
 
       const finishTaskIds = Array.from(finish.taskIds);
       finishTaskIds.splice(result.destination.index, 0, result.draggableId);
       const newFinish = {
         ...finish,
-        taskIds: finishTaskIds
+        taskIds: finishTaskIds,
       };
 
       setState({
@@ -98,8 +120,8 @@ export default function View() {
         columns: {
           ...state.columns,
           [newStart.id]: newStart,
-          [newFinish.id]: newFinish
-        }
+          [newFinish.id]: newFinish,
+        },
       });
     },
     [state]
@@ -110,51 +132,54 @@ export default function View() {
       {
         <Grid
           sx={{
-            background:
-              'linear-gradient(to right, #070807,#2b2a27,#302f2c, #ab7329)',
-            minHeight: '100vh',
-            position: 'relative',
-            overflow: 'hidden'
+            backgroundImage: `url(${backgroundImg})`,
+            backgroundSize: "100% 100%",
+            minHeight: "100vh",
+            position: "relative",
+            overflow: "hidden",
           }}
         >
-          <div style={{ background: 'radial-gradient(circle, rgba(171, 115, 41, 0.5) 30%, rgb(45 44 41) 69%)', width: '100%', height: '100%', position: 'absolute', zIndex: '-1', left: '50%' }}></div>
-          <Grid
-            container
-            columnSpacing={2}
-            style={{
-              zIndex: '1000',
-              padding: '1%',
-            }}
-          >
+          <Grid container sx={{ height: "100vh" }}>
             <Grid item xs={12} md={8} lg={9}>
+              <Grid
+                sx={{
+                  position: "absolute",
+                  width: "100vw",
+                  height: "100vh",
+                  color: "white",
+                }}
+              >
+                <MSelect
+                  label="YAMAHA F300XCB"
+                  style={{ top: "50px", right: "10%" }}
+                />
+                <MSelect
+                  label="SIMRAD HAL020+"
+                  style={{ top: "100px", left: "45%" }}
+                />
+                <MSelect
+                  label="BOW COMPARTMENTS"
+                  style={{ top: "calc(20% + 140px)", left: "15%" }}
+                />
+                <MSelect
+                  label="Sleipner bowthruster"
+                  style={{ bottom: "14%", right: "18%" }}
+                />
+                <Boat />
+              </Grid>
               <Grid item xs={12}>
                 <Grid item lg={8} md={12} xs={12}>
-                  <Grid style={{ fontSize: '50px', color: 'white' }}>
+                  <Grid style={{ fontSize: "50px", color: "white" }}>
                     ANTTEC 750 SPD
                   </Grid>
-                  <Grid style={{ color: 'white' }}>
+                  <Grid style={{ color: "white" }}>
                     Hello , enjoy the life!!!
                   </Grid>
                 </Grid>
                 <Grid />
               </Grid>
-              <Grid
-                sx={{
-                  paddingLeft: '10%',
-                  marginTop: '10px',
-                  color: 'white',
-                  position: 'relative'
-                }}
-              >
-                <MSelect label="YAMAHA F300XCB" style={{ top: '50px', right: '10%' }} />
-                <MSelect label="SIMRAD HAL020+" style={{ top: '100px', left: '45%' }} />
-                <MSelect label="BOW COMPARTMENTS" style={{ top: 'calc(20% + 140px)', left: '15%' }} />
-                <MSelect label="Sleipner bowthruster" style={{ bottom: '14%', right: '18%' }} />
-                <Boat />
-              </Grid>
-              <Grid item xs={12} />
             </Grid>
-            <Grid item xs={12} md={4} lg={3}>
+            <Grid item xs={12} md={4} lg={3} sx={{ zIndex: "100" }}>
               <Grid container>
                 <DragDropContext
                   onDragStart={handleDragStart}
@@ -164,22 +189,22 @@ export default function View() {
                   <Grid
                     item
                     xs={12}
-                    margin={'2%'}
+                    margin={"2%"}
                     style={{
-                      backgroundColor: '#212121',
-                      padding: '3%',
-                      alignContent: 'center',
-                      borderRadius: '20px',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '0.5rem',
+                      backgroundColor: "#212121",
+                      padding: "3%",
+                      alignContent: "center",
+                      borderRadius: "20px",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "0.5rem",
                     }}
                   >
                     <Grid
                       style={{
-                        color: 'white',
-                        textAlign: 'center',
-                        padding: '1%',
+                        color: "white",
+                        textAlign: "center",
+                        padding: "1%",
                       }}
                     >
                       CONFIGURATION
@@ -187,76 +212,104 @@ export default function View() {
                     <Droppable droppableId={`${state.columnOrder[0]}`}>
                       {(provided, snapshot) => (
                         <div
-                          style={{ width: "100%", height: '100%', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "0.5rem",
+                          }}
                           ref={provided.innerRef}
                           {...provided.droppableProps}
                         >
-                          {
-                            state.columns['column-1'].taskIds.map(taskId => state.tasks[taskId]).map((task, index) => (
-                              <Draggable draggableId={task.id} index={index} key={`${Date.now()}${index}`}>
+                          {state.columns["column-1"].taskIds
+                            .map((taskId) => state.tasks[taskId])
+                            .map((task, index) => (
+                              <Draggable
+                                draggableId={task.id}
+                                index={index}
+                                key={`${Date.now()}${index}`}
+                              >
                                 {(provided, snapshot) => (
                                   <Grid
                                     style={{
-                                      textAlign: 'center',
+                                      textAlign: "center",
                                     }}
                                     ref={provided.innerRef}
                                     {...provided.draggableProps}
                                   >
                                     <div
-                                      {...provided.dragHandleProps} 
-                                      className='draggable-item'
+                                      {...provided.dragHandleProps}
+                                      className="draggable-item"
                                     >
                                       <div>
                                         <Box as="span" color="white">
                                           {task.content}
                                         </Box>
-                                        <CloseIcon />
+                                        <CloseIcon
+                                          style={{ cursor: "pointer" }}
+                                          onClick={() =>
+                                            deleteConfiguration(task.id)
+                                          }
+                                        />
                                       </div>
                                     </div>
                                   </Grid>
                                 )}
                               </Draggable>
-                            ))
-                          }
+                            ))}
                         </div>
                       )}
-                    </Droppable> 
+                    </Droppable>
                   </Grid>
                   <Grid
                     item
                     xs={12}
-                    display={'flex'}
-                    flexDirection={'column'}
-                    gap={'0.5rem'}
-                    padding={'2%'}
-                    margin={'2%'}
+                    display={"flex"}
+                    flexDirection={"column"}
+                    gap={"0.5rem"}
+                    padding={"2%"}
+                    margin={"2%"}
                     style={{
-                      backgroundColor: '#212121',
-                      borderRadius: '20px',
+                      backgroundColor: "#212121",
+                      borderRadius: "20px",
                     }}
                   >
-                    <p style={{ color: 'white', textAlign: 'center' }}>ADDONS</p>
+                    <p style={{ color: "white", textAlign: "center" }}>
+                      ADDONS
+                    </p>
                     <Droppable droppableId={`${state.columnOrder[1]}`}>
-                        {(provided, snapshot) => (
-                          <div
-                            style={{ width: "100%", height: '100%', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}
-                            ref={provided.innerRef}
-                            {...provided.droppableProps}
-                          >
-                            {
-                              state.columns['column-2'].taskIds.map(taskId => state.tasks[taskId]).map((task, index) => (
-                                <Draggable draggableId={task.id} index={index} key={`${Date.now()}${index}`}>
+                      {(provided, snapshot) => (
+                        <div
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "0.5rem",
+                          }}
+                          ref={provided.innerRef}
+                          {...provided.droppableProps}
+                        >
+                          {state.columns["column-2"].taskIds
+                            .map((taskId) => state.tasks[taskId])
+                            .map((task, index) => (
+                              <Draggable
+                                draggableId={task.id}
+                                index={index}
+                                key={`${Date.now()}${index}`}
+                              >
                                 {(provided, snapshot) => (
                                   <Grid
                                     style={{
-                                      textAlign: 'center',
+                                      textAlign: "center",
                                     }}
                                     ref={provided.innerRef}
                                     {...provided.draggableProps}
                                   >
                                     <div
-                                      {...provided.dragHandleProps} 
-                                      className='draggable-item black'
+                                      {...provided.dragHandleProps}
+                                      className="draggable-item black"
                                     >
                                       <div>
                                         <Box as="span" color="white">
@@ -268,42 +321,41 @@ export default function View() {
                                   </Grid>
                                 )}
                               </Draggable>
-                              ))
-                            }
-                          </div>
-                        )}
-                      </Droppable> 
+                            ))}
+                        </div>
+                      )}
+                    </Droppable>
                   </Grid>
                 </DragDropContext>
                 <Grid
                   item
                   xs={12}
-                  margin={'2%'}
+                  margin={"2%"}
                   sx={{
-                    backgroundColor: '#212121',
-                    padding: '3%',
-                    alignContent: 'center',
-                    borderRadius: '20px',
+                    backgroundColor: "#212121",
+                    padding: "3%",
+                    alignContent: "center",
+                    borderRadius: "20px",
                   }}
                 >
-                  <p style={{ textAlign: 'center', color: 'white' }}>
+                  <p style={{ textAlign: "center", color: "white" }}>
                     Total: 143 000$
                   </p>
                   <Grid
                     container
                     columnSpacing={1}
-                    style={{ justifyContent: 'space-between' }}
+                    style={{ justifyContent: "space-between" }}
                   >
                     <Grid>
                       <Button
                         style={{
-                          color: 'white',
-                          marginLeft: '15px',
-                          borderRadius: '25px',
-                          backgroundColor: '#ff9900',
-                          ':hover': {
+                          color: "white",
+                          marginLeft: "15px",
+                          borderRadius: "25px",
+                          backgroundColor: "#ff9900",
+                          ":hover": {
                             boxShadow: 4,
-                            backgroundColor: '#ffa31a',
+                            backgroundColor: "#ffa31a",
                           },
                         }}
                       >
@@ -313,13 +365,13 @@ export default function View() {
                     <Grid>
                       <Button
                         style={{
-                          marginRight: '15px',
-                          color: 'white',
-                          borderRadius: '25px',
-                          backgroundColor: '#ff9900',
-                          ':hover': {
+                          marginRight: "15px",
+                          color: "white",
+                          borderRadius: "25px",
+                          backgroundColor: "#ff9900",
+                          ":hover": {
                             boxShadow: 4,
-                            backgroundColor: '#ffa31a',
+                            backgroundColor: "#ffa31a",
                           },
                         }}
                       >

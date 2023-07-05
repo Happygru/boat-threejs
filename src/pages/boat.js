@@ -3,79 +3,77 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
-export default function Boat() {
+const Boat = () => {
   useEffect(() => {
-    const canvas = document.querySelector("#canvas");
-    const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
+    let canvas = document.querySelector("#canvas");
+    let scene = new THREE.Scene();
+    let camera;
+    let renderer;
+    camera = new THREE.PerspectiveCamera(
+      45,
+      window.innerWidth / window.innerHeight,
+      0.25,
+      20
+    );
+    camera.position.set(-5.8, 2, -6);
+    const light1 = new THREE.PointLight({ color: "#800080" }, 15);
+    light1.position.set(0, 3, 2);
+    light1.castShadow = true;
+    light1.shadow.mapSize.width = 1024;
+    light1.shadow.mapSize.height = 768;
+    light1.shadow.radius = 5;
+    scene.add(light1);
 
-    const fov = 150;
-    const aspect = 2; // the canvas default
-    const near = 0.1;
-    const far = 5;
-    const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-    camera.position.z = 20;
-    camera.position.y = 100;
-    camera.position.x = 40;
+    const light2 = new THREE.PointLight({ color: "#800080" }, 10);
+    light2.position.set(-10, 3, 2);
+    light2.castShadow = true;
+    light2.shadow.mapSize.width = 1024;
+    light2.shadow.mapSize.height = 768;
+    light2.shadow.radius = 5;
+    scene.add(light2);
 
-    const scene = new THREE.Scene();
-
-    {
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
-      const mainLight = new THREE.DirectionalLight(0xffffff, 1);
-      mainLight.position.set(1, 1, 1);
-      scene.add(ambientLight, mainLight);
-    }
-
-    const boxWidth = 1;
-    const boxHeight = 1;
-    const boxDepth = 1;
-    const geometry = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);
-
-    function makeInstance(geometry, color, x) {
-      const material = new THREE.MeshPhongMaterial({ color });
-
-      const cube = new THREE.Mesh(geometry, material);
-      // scene.add(cube);
-
-      cube.position.x = x;
-
-      return cube;
-    }
-
-    const loader = new GLTFLoader();
-    loader.load("boat.gltf", (gltf) => {
+    let loader = new GLTFLoader();
+    loader.load("boat.gltf", function (gltf) {
       scene.add(gltf.scene);
-      // Optional: You can perform additional operations on the loaded model here
+      render();
     });
-    const cubes = [
-      makeInstance(geometry, 0x44aa88, 0),
-      makeInstance(geometry, 0x8844aa, -2),
-      makeInstance(geometry, 0xaa8844, 2),
-    ];
+
+    renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      canvas: canvas,
+      alpha: true,
+    });
+    renderer.setPixelRatio(1);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping; //added contrast for filmic look
+    renderer.toneMappingExposure = 1;
+    renderer.setClearColor(0x000000, 0);
+    renderer.outputEncoding = THREE.sRGBEncoding; //extended color space for the hdr
+
     const controls = new OrbitControls(camera, renderer.domElement);
-
-    //controls.update() must be called after any manual changes to the camera's transform
-    camera.position.set(-2, 0.4, -0.9);
-
+    controls.addEventListener("change", render); // use if there is no animation loop to render after any changes
+    controls.minDistance = 2;
+    controls.maxDistance = 10;
+    controls.target.set(0, 0, -0.2);
     controls.update();
-    renderer.setPixelRatio(2);
-    function render(time) {
-      time *= 0.001;
 
-      cubes.forEach((cube, ndx) => {
-        const speed = 1 + ndx * 0.1;
-        const rot = time * speed;
-        cube.rotation.x = rot;
-        cube.rotation.y = rot;
-      });
-      renderer.setClearColor("rgb(255, 0, 0)", 0);
-      renderer.render(scene, camera);
+    window.addEventListener("resize", onWindowResize);
+    render(); //the update loop
+    function onWindowResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
 
-      requestAnimationFrame(render);
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      render();
     }
 
-    requestAnimationFrame(render);
+    function render() {
+      renderer.render(scene, camera);
+    }
   }, []);
 
   return <canvas id="canvas" style={{ width: "100%", height: "100vh" }} />;
-}
+};
+
+export default Boat;

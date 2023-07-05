@@ -151,35 +151,49 @@ export default function View() {
               >
                 <MSelect
                   label="YAMAHA F300XCB"
-                  style={{ top: "50px", right: "10%" }}
+                  style={{ top: "21%", right: "28%" }}
                 />
                 <MSelect
                   label="SIMRAD HAL020+"
-                  style={{ top: "100px", left: "45%" }}
+                  style={{ top: "28%", left: "45%" }}
                 />
                 <MSelect
                   label="BOW COMPARTMENTS"
-                  style={{ top: "calc(20% + 140px)", left: "15%" }}
+                  style={{ top: "calc(34% + 170px)", left: "29%" }}
                 />
                 <MSelect
                   label="Sleipner bowthruster"
-                  style={{ bottom: "14%", right: "18%" }}
+                  style={{ bottom: "24%", right: "30%" }}
                 />
                 <Boat />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{ padding: "16px" }}>
                 <Grid item lg={8} md={12} xs={12}>
-                  <Grid style={{ fontSize: "50px", color: "white" }}>
+                  <Box
+                    as="p"
+                    m="0"
+                    style={{ fontSize: "50px", color: "white" }}
+                  >
                     ANTTEC 750 SPD
-                  </Grid>
-                  <Grid style={{ color: "white" }}>
-                    Hello , enjoy the life!!!
-                  </Grid>
+                  </Box>
+                  <Box style={{ color: "white", width: "60%" }}>
+                    A leisure boat with professional boat standards for those
+                    with high demands. Designed for use in our Nordic waters in
+                    all weather conditions. Now better than ever before with a
+                    refined cockpit environment, a completely new canopy
+                    solution, and a multitude of updates from bow to stern.
+                  </Box>
                 </Grid>
                 <Grid />
               </Grid>
             </Grid>
-            <Grid item xs={12} md={4} lg={3} sx={{ zIndex: "100" }}>
+            <Grid
+              item
+              xs={12}
+              md={4}
+              lg={3}
+              sx={{ zIndex: "100", padding: "16px" }}
+            >
               <Grid container>
                 <DragDropContext
                   onDragStart={handleDragStart}

@@ -78,3 +78,7 @@ canvas {
   box-shadow: 6;
   background-color: #ffa31a;
 }
+
+div[draggable^="true"] {
+  background-color: black !important;
+}

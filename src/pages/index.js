@@ -1,9 +1,9 @@
-import { useCallback, useState } from 'react';
-import Boat from './boat';
-import { Grid, Button, Box } from '@mui/material';
-import MSelect from './MSelect';
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
-import CloseIcon from '@mui/icons-material/Close';
+import { useCallback, useState } from "react";
+import Boat from "./boat";
+import { Grid, Button, Box } from "@mui/material";
+import MSelect from "./MSelect";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import CloseIcon from "@mui/icons-material/Close";
 
 import backgroundImg from "../assets/background.png";
 
@@ -11,6 +11,10 @@ import initialData from "./initial-data";
 
 export default function View() {
   const [state, setState] = useState(initialData);
+  const [currentDragItem, setCurrentDragItem] = useState({
+    taskId: "",
+    columnId: "",
+  });
 
   const deleteConfiguration = useCallback(
     (clickID) => {
@@ -39,9 +43,10 @@ export default function View() {
 
   const handleDragStart = useCallback(
     (start) => {
-      document.body.style.color = "orange";
-      document.body.style.transition = "background-color 0.2s ease";
-
+      setCurrentDragItem({
+        taskId: start.draggableId,
+        columnId: start.source.droppableId,
+      });
       setState({
         ...state,
         homeIndex: state.columnOrder.indexOf(start.source.droppableId),
@@ -50,16 +55,7 @@ export default function View() {
     [state]
   );
 
-  const handleDragUpdate = useCallback(
-    (update) => {
-      const opacity = update.destination
-        ? update.destination.index / Object.keys(state.tasks).length
-        : 0;
-
-      document.body.style.backgroundColor = `rgba(153, 141, 217, ${opacity})`;
-    },
-    [state]
-  );
+  const handleDragUpdate = useCallback((update) => {}, []);
 
   const handleDragEnd = useCallback(
     (result) => {
@@ -228,11 +224,20 @@ export default function View() {
                         <div
                           style={{
                             width: "100%",
-                            height: "100%",
+                            height: `${
+                              state.columns["column-1"].taskIds.length * 34 +
+                              (state.columns["column-1"].taskIds.length - 1) *
+                                10 +
+                              (snapshot.isDraggingOver &&
+                              currentDragItem.columnId !== "column-1"
+                                ? 44
+                                : 0)
+                            }px`,
                             display: "flex",
                             flexDirection: "column",
-                            gap: "0.5rem",
+                            gap: "10px",
                           }}
+                          className="column1_area"
                           ref={provided.innerRef}
                           {...provided.droppableProps}
                         >
@@ -246,15 +251,15 @@ export default function View() {
                               >
                                 {(provided, snapshot) => (
                                   <Grid
-                                    style={{
-                                      textAlign: "center",
-                                    }}
+                                    id={task.id}
                                     ref={provided.innerRef}
                                     {...provided.draggableProps}
                                   >
                                     <div
                                       {...provided.dragHandleProps}
-                                      className="draggable-item"
+                                      className={`draggable-item ${
+                                        snapshot.isDragging ? "black" : ""
+                                      }`}
                                     >
                                       <div>
                                         <Box as="span" color="white">
@@ -297,11 +302,20 @@ export default function View() {
                         <div
                           style={{
                             width: "100%",
-                            height: "100%",
+                            height: `${
+                              state.columns["column-2"].taskIds.length * 34 +
+                              (state.columns["column-2"].taskIds.length - 1) *
+                                10 +
+                              (snapshot.isDraggingOver &&
+                              currentDragItem.columnId !== "column-2"
+                                ? 44
+                                : 0)
+                            }px`,
                             display: "flex",
                             flexDirection: "column",
-                            gap: "0.5rem",
+                            gap: "10px",
                           }}
+                          className="column2_area"
                           ref={provided.innerRef}
                           {...provided.droppableProps}
                         >
@@ -323,7 +337,9 @@ export default function View() {
                                   >
                                     <div
                                       {...provided.dragHandleProps}
-                                      className="draggable-item black"
+                                      className={`draggable-item ${
+                                        snapshot.isDragging ? "" : "black"
+                                      }`}
                                     >
                                       <div>
                                         <Box as="span" color="white">

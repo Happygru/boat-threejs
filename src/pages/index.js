@@ -1,7 +1,6 @@
 import { useCallback, useState } from "react";
 import Boat from "./boat";
 import { Grid, Button, Box } from "@mui/material";
-import MSelect from "./MSelect";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -145,22 +144,6 @@ export default function View() {
                   color: "white",
                 }}
               >
-                <MSelect
-                  label="YAMAHA F300XCB"
-                  style={{ top: "21%", right: "28%" }}
-                />
-                <MSelect
-                  label="SIMRAD HAL020+"
-                  style={{ top: "28%", left: "45%" }}
-                />
-                <MSelect
-                  label="BOW COMPARTMENTS"
-                  style={{ top: "calc(34% + 170px)", left: "29%" }}
-                />
-                <MSelect
-                  label="Sleipner bowthruster"
-                  style={{ bottom: "24%", right: "30%" }}
-                />
                 <Boat />
               </Grid>
               <Grid item xs={12} sx={{ padding: "16px" }}>

@@ -82,3 +82,13 @@ canvas {
 div[draggable^="true"] {
   background-color: black !important;
 }
+
+model-viewer {
+  cursor: grab;
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  user-select: none;
+}

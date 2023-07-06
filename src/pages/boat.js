@@ -8,14 +8,22 @@ const Boat = () => {
       ar
       ar-modes="webxr scene-viewer quick-look"
       camera-controls
-      poster="poster.webp"
-      enviroment-image="royal_esplanade_1k.hdr"
+      // poster="poster.webp"
+      enviroment-image="base_color_anytec_750.png"
       shadow-intensity="0.67"
       shadow-softness="0.81"
       camera-orbit="227.7deg 74.51deg 14.64m"
       field-of-view="20.46deg"
     >
-      <MSelect label="YAMAHA F300XCB" style={{ right: "28%" }} />
+      <MSelect
+        label="YAMAHA F300XCB"
+        // style={{ right: "28%" }}
+        data-normal="0 1 0"
+        data-visibility-attribute="visible"
+        data-position="-1.7 1.5 2"
+        className="Hotspot"
+        slot="hotspot-4"
+      />
       <MSelect
         label="SIMRAD HAL020+"
         className="Hotspot"
@@ -24,6 +32,7 @@ const Boat = () => {
         data-normal="0 1 0"
         data-visibility-attribute="visible"
         dir="row-reverse"
+        style={{ left: "-10%" }}
       />
       <MSelect
         label="BOW COMPARTMENTS"

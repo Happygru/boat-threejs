@@ -1,11 +1,18 @@
 import { useState } from "react";
 import { IconButton, Box, Grid, Button } from "@mui/material";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import CloseIcon from '@mui/icons-material/Close';
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import CloseIcon from "@mui/icons-material/Close";
 
 const MSelect = (props) => {
   const [visible, setVisible] = useState(false);
-  const { label, dir = "row" } = props;
+  const { dir = "row", list, dataid, deleteConfiguration } = props;
+  const [text, setText] = useState(
+    list.length > 0 ? list[0].content : "Disabled"
+  );
+
+  const setTexture = (value) => {
+    setText(value);
+  };
 
   const toggleSlide = () => {
     setVisible(!visible);
@@ -31,8 +38,9 @@ const MSelect = (props) => {
           fontSize={"16px"}
           backgroundColor="rgba(0,0,0,0.6)"
           borderRadius="5px"
+          minWidth="215px"
         >
-          {label}
+          {text}
         </Box>
         <IconButton
           style={{
@@ -69,63 +77,39 @@ const MSelect = (props) => {
             gap: "8px",
           }}
         >
-          <Button
-            endIcon={<CloseIcon />}
-            sx={{
-              width: "100%",
-              justifyContent: "space-between",
-              borderRadius: "25px",
-              backgroundColor: "#ff9900",
-              fontSize: "14px",
-              padding: "0 10px",
-              ":hover": {
-                boxShadow: 6,
-                backgroundColor: "#ffa31a",
-              },
-            }}
-          >
-            <Box as="span" color="white">
-              Yamaha F300XCB
-            </Box>
-          </Button>
-          <Button
-            endIcon={<CloseIcon />}
-            sx={{
-              width: "100%",
-              justifyContent: "space-between",
-              borderRadius: "25px",
-              backgroundColor: "#ff9900",
-              fontSize: "14px",
-              padding: "0 10px",
-              ":hover": {
-                boxShadow: 6,
-                backgroundColor: "#ffa31a",
-              },
-            }}
-          >
-            <Box as="span" color="white">
-              Yamaha F300XCB
-            </Box>
-          </Button>
-          <Button
-            endIcon={<CloseIcon />}
-            sx={{
-              width: "100%",
-              justifyContent: "space-between",
-              borderRadius: "25px",
-              backgroundColor: "#ff9900",
-              fontSize: "14px",
-              padding: "0 10px",
-              ":hover": {
-                boxShadow: 6,
-                backgroundColor: "#ffa31a",
-              },
-            }}
-          >
-            <Box as="span" color="white">
-              Yamaha F300XCB
-            </Box>
-          </Button>
+          {list.length > 0 &&
+            list.map((item, index) => (
+              <Button
+                endIcon={
+                  <CloseIcon onClick={(e) => deleteConfiguration(item.id)} />
+                }
+                sx={{
+                  width: "100%",
+                  justifyContent: "space-between",
+                  borderRadius: "25px",
+                  backgroundColor: "#ff9900",
+                  fontSize: "14px",
+                  padding: "0 10px",
+                  ":hover": {
+                    boxShadow: 6,
+                    backgroundColor: "#ffa31a",
+                  },
+                }}
+              >
+                <Box
+                  as="span"
+                  width="100%"
+                  onClick={() => setTexture(`${item.content}`)}
+                  className="select_model"
+                  datatexture={item.texture}
+                  dataindex="normalTexture"
+                  dataid={dataid}
+                  color="white"
+                >
+                  {item.content}
+                </Box>
+              </Button>
+            ))}
         </Grid>
       </Box>
     </Box>

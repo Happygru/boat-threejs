@@ -121,7 +121,6 @@ export default function View() {
     },
     [state]
   );
-
   return (
     <div>
       {
@@ -144,7 +143,12 @@ export default function View() {
                   color: "white",
                 }}
               >
-                <Boat />
+                <Boat
+                  data={state.columns["column-1"].taskIds.map(
+                    (taskId) => state.tasks[taskId]
+                  )}
+                  deleteConfiguration={deleteConfiguration}
+                />
               </Grid>
               <Grid item xs={12} sx={{ padding: "16px" }}>
                 <Grid item lg={8} md={12} xs={12}>
